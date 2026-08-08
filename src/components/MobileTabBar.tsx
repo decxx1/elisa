@@ -1,23 +1,21 @@
 import { Icon } from '@iconify/react';
 
 type MobileTabBarProps = {
-	musicPlaying: boolean;
 	guestbookOpen: boolean;
 	guestCount: number;
-	onToggleMusic: () => void;
 	onOpenLocation: () => void;
 	onToggleGuestbook: () => void;
 	onOpenRsvp: () => void;
+	onOpenDate: () => void;
 };
 
 export default function MobileTabBar({
-	musicPlaying,
 	guestbookOpen,
 	guestCount,
-	onToggleMusic,
 	onOpenLocation,
 	onToggleGuestbook,
-	onOpenRsvp
+	onOpenRsvp,
+	onOpenDate
 }: MobileTabBarProps) {
 	return (
 		<nav
@@ -56,13 +54,12 @@ export default function MobileTabBar({
 					)}
 				</button>
 				<button
-					className={`flex flex-col items-center gap-1 px-1.5 py-3 font-ui text-[9px] font-bold uppercase tracking-[.14em] transition ${musicPlaying ? 'text-gold' : 'text-ivory/70 hover:text-gold'}`}
+					className="flex flex-col items-center gap-1 px-1.5 py-3 font-ui text-[9px] font-bold uppercase tracking-[.14em] text-ivory/70 transition hover:text-gold"
 					type="button"
-					onClick={onToggleMusic}
-					aria-pressed={musicPlaying}
+					onClick={onOpenDate}
 				>
-					<Icon icon={musicPlaying ? 'lucide:volume-2' : 'lucide:music-2'} width="18" />
-					{musicPlaying ? 'Pausar' : 'Jazz'}
+					<Icon icon="lucide:calendar-days" width="18" />
+					Fecha
 				</button>
 			</div>
 		</nav>

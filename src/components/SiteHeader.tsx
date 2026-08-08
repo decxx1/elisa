@@ -78,16 +78,29 @@ export default function SiteHeader({ musicPlaying, onToggleMusic }: SiteHeaderPr
 						<Icon icon={musicPlaying ? 'lucide:volume-2' : 'lucide:music-2'} width="14" />
 						<span>{musicPlaying ? 'Pausar jazz' : 'Encender jazz'}</span>
 					</button>
-					<button
-						className="flex size-10 shrink-0 items-center justify-center border border-white/30 text-white transition hover:bg-white hover:text-ink lg:hidden"
-						type="button"
-						onClick={() => setNavOpen((open) => !open)}
-						aria-expanded={navOpen}
-						aria-controls="mobile-nav"
-						aria-label={navOpen ? 'Cerrar menú' : 'Abrir menú'}
-					>
-						<Icon icon={navOpen ? 'lucide:x' : 'lucide:menu'} width="18" />
-					</button>
+					<div className="flex items-center gap-2 lg:hidden">
+						<button
+							className={`flex size-10 shrink-0 items-center justify-center border transition hover:bg-white hover:text-ink ${
+								musicPlaying ? 'border-gold text-gold' : 'border-white/30 text-white'
+							}`}
+							type="button"
+							onClick={onToggleMusic}
+							aria-label={musicPlaying ? 'Pausar jazz' : 'Encender jazz'}
+							aria-pressed={musicPlaying}
+						>
+							<Icon icon={musicPlaying ? 'lucide:volume-2' : 'lucide:music-2'} width="17" />
+						</button>
+						<button
+							className="flex size-10 shrink-0 items-center justify-center border border-white/30 text-white transition hover:bg-white hover:text-ink"
+							type="button"
+							onClick={() => setNavOpen((open) => !open)}
+							aria-expanded={navOpen}
+							aria-controls="mobile-nav"
+							aria-label={navOpen ? 'Cerrar menú' : 'Abrir menú'}
+						>
+							<Icon icon={navOpen ? 'lucide:x' : 'lucide:menu'} width="18" />
+						</button>
+					</div>
 				</div>
 			</header>
 

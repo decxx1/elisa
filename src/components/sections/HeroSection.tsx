@@ -28,7 +28,7 @@ export default function HeroSection() {
 					<p className="mx-auto mt-8 max-w-xl font-serif text-3xl leading-tight text-ivory/85 sm:text-4xl lg:mx-0">
 						¡Adentrémonos en los dorados años 20!
 					</p>
-					<p className="mt-5 font-ui text-[11px] font-bold uppercase tracking-[0.28em] text-gold">Miércoles 19 de agosto</p>
+					<p className="mt-5 font-ui text-sm font-bold uppercase tracking-[0.28em] text-gold">Miércoles 19 de agosto</p>
 					<div className="mt-10 hidden flex-wrap items-center gap-3 font-ui text-xs font-bold uppercase tracking-[0.2em] lg:flex">
 						<a className="group inline-flex items-center gap-3 bg-gold px-5 py-4 text-ink transition hover:bg-ivory" href="#rsvp">
 							Reservar mi lugar <Icon className="transition-transform group-hover:translate-x-1" icon="lucide:arrow-up-right" width="16" />

@@ -3,7 +3,24 @@ import { useEffect, useState } from 'react';
 import AlbumLightbox from '@/components/overlays/AlbumLightbox';
 import { albumPhotos } from '@/lib/album';
 
-const tileHeights = ['aspect-[4/3]', 'aspect-[3/4]', 'aspect-[5/4]', 'aspect-square'];
+const tileLayouts = [
+	'col-span-2 row-span-2',
+	'col-span-2 row-span-2',
+	'',
+	'',
+	'row-span-2',
+	'',
+	'row-span-2',
+	'',
+	'row-span-2',
+	'',
+	'',
+	'',
+	'col-span-2',
+	'col-span-2 row-span-2',
+	'',
+	'row-span-2'
+];
 
 export default function GaleriaSection() {
 	const [active, setActive] = useState(0);
@@ -48,12 +65,12 @@ export default function GaleriaSection() {
 					<div className="relative mx-auto max-w-6xl">
 						<div className="deco-frame pointer-events-none absolute -inset-3 border border-gold-dark/40 sm:-inset-5" aria-hidden="true" />
 						<div className="bg-[#181b19] p-2 sm:p-3">
-							<div className="columns-2 [column-gap:.5rem] sm:columns-3 sm:[column-gap:.75rem] lg:columns-4">
+							<div className="grid auto-rows-[7rem] grid-flow-dense grid-cols-2 gap-2 sm:auto-rows-[8rem] sm:grid-cols-3 sm:gap-3 lg:auto-rows-[9rem] lg:grid-cols-4">
 								{albumPhotos.map((photo, index) => (
 									<button
 										key={photo.id}
 										type="button"
-										className={`group relative mb-2 block w-full break-inside-avoid overflow-hidden text-left sm:mb-3 ${tileHeights[index % tileHeights.length]} ${
+										className={`group relative min-h-0 overflow-hidden border border-gold-dark/60 bg-[#181b19] p-1 text-left transition-colors hover:border-gold ${tileLayouts[index] ?? ''} ${
 											index === active ? 'ring-2 ring-inset ring-gold' : ''
 										}`}
 										onClick={() => {

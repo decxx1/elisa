@@ -1,4 +1,4 @@
-# Elisa · Una noche para la historia
+# Elisa · Un día para la historia
 
 Landing interactiva para celebrar 102 años con una estética Art Déco / jazz de los años 20.
 

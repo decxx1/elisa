@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 import MobileTabBar from '@/components/MobileTabBar';
 import DesktopQuickActions from '@/components/overlays/DesktopQuickActions';
+import DateModal from '@/components/overlays/DateModal';
 import GuestbookModal from '@/components/overlays/GuestbookModal';
 import GuestbookPanel from '@/components/overlays/GuestbookPanel';
 import LocationModal from '@/components/overlays/LocationModal';
@@ -26,6 +27,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export default function ArtDecoLanding() {
 	const rootRef = useRef<HTMLDivElement>(null);
 	const [locationModalOpen, setLocationModalOpen] = useState(false);
+	const [dateModalOpen, setDateModalOpen] = useState(false);
 	const { musicPlaying, toggleMusic } = useMusic();
 	const {
 		stats,
@@ -62,26 +64,27 @@ export default function ArtDecoLanding() {
 	});
 
 	useEffect(() => {
-		if (!guestbookOpen && !guestbookModalOpen && !rsvpModalOpen && !locationModalOpen) return;
+		if (!guestbookOpen && !guestbookModalOpen && !rsvpModalOpen && !locationModalOpen && !dateModalOpen) return;
 		function onKey(event: KeyboardEvent) {
 			if (event.key !== 'Escape') return;
 			if (rsvpModalOpen) setRsvpModalOpen(false);
 			else if (locationModalOpen) setLocationModalOpen(false);
+			else if (dateModalOpen) setDateModalOpen(false);
 			else if (guestbookModalOpen) setGuestbookModalOpen(false);
 			else setGuestbookOpen(false);
 		}
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
-	}, [guestbookOpen, guestbookModalOpen, rsvpModalOpen, locationModalOpen, setGuestbookOpen, setGuestbookModalOpen, setRsvpModalOpen]);
+	}, [guestbookOpen, guestbookModalOpen, rsvpModalOpen, locationModalOpen, dateModalOpen, setGuestbookOpen, setGuestbookModalOpen, setRsvpModalOpen]);
 
 	useEffect(() => {
-		if (!guestbookModalOpen && !rsvpModalOpen && !locationModalOpen) return;
+		if (!guestbookModalOpen && !rsvpModalOpen && !locationModalOpen && !dateModalOpen) return;
 		const previous = document.body.style.overflow;
 		document.body.style.overflow = 'hidden';
 		return () => {
 			document.body.style.overflow = previous;
 		};
-	}, [guestbookModalOpen, rsvpModalOpen, locationModalOpen]);
+	}, [guestbookModalOpen, rsvpModalOpen, locationModalOpen, dateModalOpen]);
 
 	useGSAP(() => {
 		const media = gsap.matchMedia();
@@ -175,16 +178,16 @@ export default function ArtDecoLanding() {
 			</div>
 
 			<MobileTabBar
-				musicPlaying={musicPlaying}
 				guestbookOpen={guestbookOpen}
 				guestCount={guests.length}
-				onToggleMusic={toggleMusic}
 				onOpenLocation={() => setLocationModalOpen(true)}
 				onOpenRsvp={openRsvpModal}
 				onToggleGuestbook={toggleGuestbook}
+				onOpenDate={() => setDateModalOpen(true)}
 			/>
 
 			{locationModalOpen && <LocationModal onClose={() => setLocationModalOpen(false)} />}
+			{dateModalOpen && <DateModal onClose={() => setDateModalOpen(false)} />}
 
 			{guestbookModalOpen && (
 				<GuestbookModal

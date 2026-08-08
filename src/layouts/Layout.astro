@@ -6,7 +6,7 @@ interface Props {
 	description?: string;
 }
 
-const { title, description = 'Celebramos los 102 años de Elisa con una noche inolvidable de música, recuerdos y elegancia.' } = Astro.props;
+const { title, description = 'Celebramos los 102 años de Elisa con un día inolvidable de música, recuerdos y elegancia.' } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.url).href;
 const socialImageUrl = new URL('/images/meta.jpeg', Astro.url).href;
 const faviconUrl = new URL('/images/faviconx64.png', Astro.url).href;
