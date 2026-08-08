@@ -22,14 +22,14 @@ export default function HistoriaSection() {
 					<p className="reveal text-ink">
 						Te espero para hacer un viaje a la época del jazz y celebrar juntos mis <span className="text-gold-dark">102 años</span>.
 					</p>
-					<div className="reveal grid gap-3 border-y border-ink/15 py-6 font-ui text-xs font-medium uppercase tracking-[.18em] text-ink/60 sm:grid-cols-3">
-						<span className="flex items-center gap-2">
+					<div className="reveal text-center flex sm:grid gap-3 border-y border-ink/15 py-6 font-ui text-[10px] sm:text-xs font-medium uppercase tracking-[.18em] text-ink/60 sm:grid-cols-3">
+						<span className="flex flex-col sm:flex-row items-center gap-2">
 							<Icon className="text-gold-dark" icon="lucide:sparkles" width="16" /> Años dorados
 						</span>
-						<span className="flex items-center gap-2">
+						<span className="flex flex-col sm:flex-row items-center gap-2">
 							<Icon className="text-gold-dark" icon="lucide:feather" width="16" /> Estilo flapper
 						</span>
-						<span className="flex items-center gap-2">
+						<span className="flex flex-col sm:flex-row items-center gap-2">
 							<Icon className="text-gold-dark" icon="lucide:music" width="16" /> Jazz y charleston
 						</span>
 					</div>

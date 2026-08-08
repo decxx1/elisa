@@ -15,7 +15,6 @@ import HistoriaSection from '@/components/sections/HistoriaSection';
 import LugarSection from '@/components/sections/LugarSection';
 import ProgramaSection from '@/components/sections/ProgramaSection';
 import RsvpSection from '@/components/sections/RsvpSection';
-import SiteFooter from '@/components/sections/SiteFooter';
 import VestimentaSection from '@/components/sections/VestimentaSection';
 import SiteHeader from '@/components/SiteHeader';
 import { useGuestbook } from '@/hooks/useGuestbook';
@@ -149,8 +148,6 @@ export default function ArtDecoLanding() {
 				<LugarSection />
 				<GaleriaSection />
 			</main>
-
-			<SiteFooter />
 
 			<div className="pointer-events-none fixed inset-x-4 bottom-[4.75rem] z-50 flex flex-col items-end gap-3 sm:inset-x-auto sm:bottom-5 sm:right-5 lg:bottom-7 lg:right-7">
 				{guestbookOpen && (

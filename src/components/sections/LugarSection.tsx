@@ -18,6 +18,11 @@ export default function LugarSection() {
 					Abrir ubicación <Icon icon="lucide:map-pin" width="16" />
 				</a>
 			</div>
+			<div className="relative mx-auto mt-16 flex max-w-5xl flex-col justify-between gap-3 border-t border-ivory/15 pt-6 font-ui text-[9px] font-bold uppercase tracking-[.24em] text-ivory/35 sm:flex-row sm:px-2">
+				<span>Elisa · 102 años</span>
+				<span>Un día para la historia</span>
+				<span>MC · 2026</span>
+			</div>
 		</section>
 	);
 }
