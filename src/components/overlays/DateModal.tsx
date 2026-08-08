@@ -25,7 +25,7 @@ export default function DateModal({ onClose }: DateModalProps) {
 				<Icon className="mx-auto text-gold" icon="lucide:calendar-days" width="28" />
 				<p className="mt-5 font-ui text-[9px] font-bold uppercase tracking-[.28em] text-gold">La fecha</p>
 				<h2 className="mt-3 font-serif text-3xl text-ivory">Miércoles 19 de agosto</h2>
-				<p className="mt-3 font-ui text-[10px] uppercase tracking-[.2em] text-ivory/50">Un día para la historia</p>
+				<p className="mt-3 font-ui text-[10px] uppercase tracking-[.2em] text-ivory/50">De 13:00 Hs a 20:30 Hs</p>
 			</div>
 		</div>
 	);
