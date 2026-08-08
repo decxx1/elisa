@@ -19,7 +19,9 @@ const tileLayouts = [
 	'col-span-2',
 	'col-span-2 row-span-2',
 	'',
-	'row-span-2'
+	'row-span-2',
+	'col-span-2',
+	''
 ];
 
 export default function GaleriaSection() {

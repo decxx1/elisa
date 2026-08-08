@@ -22,7 +22,9 @@ const albumFiles = [
 	[14, 'jpg'],
 	[15, 'jpg'],
 	[16, 'jpeg'],
-	[17, 'jpeg']
+	[17, 'jpeg'],
+	[18, 'jpg'],
+	[19, 'jpeg']
 ] as const;
 
 export const albumPhotos: AlbumPhoto[] = albumFiles.map(([id, extension]) => ({
