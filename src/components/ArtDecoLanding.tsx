@@ -172,6 +172,7 @@ export default function ArtDecoLanding() {
 				<DesktopQuickActions
 					guestbookOpen={guestbookOpen}
 					guestCount={guests.length}
+					onOpenDate={() => setDateModalOpen(true)}
 					onOpenLocation={() => setLocationModalOpen(true)}
 					onToggleGuestbook={toggleGuestbook}
 				/>

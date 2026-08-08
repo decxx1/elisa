@@ -3,13 +3,23 @@ import { Icon } from '@iconify/react';
 type DesktopQuickActionsProps = {
 	guestbookOpen: boolean;
 	guestCount: number;
+	onOpenDate: () => void;
 	onOpenLocation: () => void;
 	onToggleGuestbook: () => void;
 };
 
-export default function DesktopQuickActions({ guestbookOpen, guestCount, onOpenLocation, onToggleGuestbook }: DesktopQuickActionsProps) {
+export default function DesktopQuickActions({ guestbookOpen, guestCount, onOpenDate, onOpenLocation, onToggleGuestbook }: DesktopQuickActionsProps) {
 	return (
 		<div className="pointer-events-auto hidden flex-col items-end gap-2 lg:flex">
+			<button
+				className="guestbook-fab flex items-center gap-2 border border-gold/70 bg-ink/90 px-3.5 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.2em] text-ivory shadow-[0_8px_24px_rgba(0,0,0,.35)] backdrop-blur-md transition hover:border-gold hover:bg-gold hover:text-ink"
+				type="button"
+				onClick={onOpenDate}
+				aria-label="Ver fecha del evento"
+			>
+				<Icon icon="lucide:calendar-days" width="14" />
+				<span>Fecha</span>
+			</button>
 			<button
 				className="guestbook-fab flex items-center gap-2 border border-gold/70 bg-ink/90 px-3.5 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.2em] text-ivory shadow-[0_8px_24px_rgba(0,0,0,.35)] backdrop-blur-md transition hover:border-gold hover:bg-gold hover:text-ink"
 				type="button"
