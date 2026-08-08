@@ -69,26 +69,24 @@ export default function SiteHeader({ musicPlaying, onToggleMusic }: SiteHeaderPr
 						))}
 					</nav>
 					<button
-						className="hidden shrink-0 items-center gap-2 rounded-full border border-white/30 px-3 py-2 font-ui text-[10px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-white hover:text-ink lg:flex"
+						className="hidden shrink-0 items-center gap-2 rounded-full border border-gold bg-gold px-3 py-2 font-ui text-[10px] font-bold uppercase tracking-[0.2em] text-ink transition hover:bg-ivory lg:flex"
 						type="button"
 						onClick={onToggleMusic}
 						aria-label={musicPlaying ? 'Pausar jazz' : 'Encender jazz'}
 						aria-pressed={musicPlaying}
 					>
-						<Icon icon={musicPlaying ? 'lucide:volume-2' : 'lucide:music-2'} width="14" />
+						<Icon className="music-pulse text-ink" icon={musicPlaying ? 'lucide:volume-2' : 'lucide:music-2'} width="14" />
 						<span>{musicPlaying ? 'Pausar jazz' : 'Encender jazz'}</span>
 					</button>
 					<div className="flex items-center gap-2 lg:hidden">
 						<button
-							className={`flex size-10 shrink-0 items-center justify-center border transition hover:bg-white hover:text-ink ${
-								musicPlaying ? 'border-gold text-gold' : 'border-white/30 text-white'
-							}`}
+							className="flex size-10 shrink-0 items-center justify-center border border-gold bg-gold text-ink transition hover:bg-ivory"
 							type="button"
 							onClick={onToggleMusic}
 							aria-label={musicPlaying ? 'Pausar jazz' : 'Encender jazz'}
 							aria-pressed={musicPlaying}
 						>
-							<Icon icon={musicPlaying ? 'lucide:volume-2' : 'lucide:music-2'} width="17" />
+							<Icon className="music-pulse text-ink" icon={musicPlaying ? 'lucide:volume-2' : 'lucide:music-2'} width="17" />
 						</button>
 						<button
 							className="flex size-10 shrink-0 items-center justify-center border border-white/30 text-white transition hover:bg-white hover:text-ink"
