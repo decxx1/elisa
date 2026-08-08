@@ -13,6 +13,14 @@ bun run dev
 
 El formulario usa `POST /api/rsvp` y guarda una persona por DNI en SQLite. La base se crea automáticamente en `DATABASE_PATH` y la tabla aplica un índice único sobre el DNI.
 
+Para reiniciar los invitados desde la terminal del servidor, ejecutar en runtime:
+
+```bash
+npm run db:reset
+```
+
+También se puede ejecutar directamente con `node ./scripts/reset-db.mjs`. El comando elimina los registros de `guests` y reinicia su contador; no requiere detener el servidor.
+
 ## Coolify
 
 El proyecto incluye un `Dockerfile` multi-stage. En Coolify:
