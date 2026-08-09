@@ -11,6 +11,15 @@ export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),
   integrations: [react()],
+  security: {
+    checkOrigin: true,
+    allowedDomains: [
+      {
+        protocol: 'https',
+        hostname: 'elisa.px.com.ar'
+      }
+    ]
+  },
 
   vite: {
     plugins: [tailwindcss()],
