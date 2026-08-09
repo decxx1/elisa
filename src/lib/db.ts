@@ -69,6 +69,26 @@ export type PublicGuest = {
 	createdAt: string;
 };
 
+export type AdminGuest = PublicGuest & {
+	dni: string;
+};
+
+export function listAdminGuests(): AdminGuest[] {
+	return db.prepare(`
+		SELECT id, name, dni, attending = 1 AS attending, message, created_at AS createdAt
+		FROM guests
+		ORDER BY datetime(created_at) DESC, id DESC
+	`).all() as AdminGuest[];
+}
+
+export function updateGuestMessage(id: number, message: string | null) {
+	return db.prepare(`UPDATE guests SET message = ? WHERE id = ?`).run(message, id).changes > 0;
+}
+
+export function deleteGuest(id: number) {
+	return db.prepare(`DELETE FROM guests WHERE id = ?`).run(id).changes > 0;
+}
+
 export function listGuestbookGuests(): PublicGuest[] {
 	const rows = db.prepare(`
 		SELECT id, name, message, attending = 1 AS attending, created_at AS createdAt

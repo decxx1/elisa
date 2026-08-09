@@ -1,0 +1,101 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { isAdminConfigured, isAdminRequest } from '@/lib/adminAuth';
+import { listAdminGuests } from '@/lib/db';
+
+const authenticated = isAdminRequest(Astro.request);
+const configured = isAdminConfigured();
+const error = Astro.url.searchParams.get('error');
+const status = Astro.url.searchParams.get('status');
+const guests = authenticated ? listAdminGuests() : [];
+
+Astro.response.headers.set('Cache-Control', 'no-store');
+
+function formatDate(value: string) {
+	return new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
+}
+---
+
+<Layout title="Admin · Elisa" description="Administración privada de los mensajes de Elisa." robots="noindex, nofollow">
+	<main class="min-h-screen bg-ink px-5 py-10 text-ivory sm:px-10 sm:py-14">
+		<div class="mx-auto max-w-5xl">
+			<header class="flex flex-col justify-between gap-5 border-b border-ivory/15 pb-8 sm:flex-row sm:items-end">
+				<div>
+					<p class="eyebrow">Administración privada</p>
+					<h1 class="mt-4 font-display text-6xl leading-none tracking-[-.05em] sm:text-8xl">Saludos.</h1>
+				</div>
+				<a class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-ivory/55 transition hover:text-gold" href="/">Volver al sitio</a>
+			</header>
+
+			{!configured ? (
+				<section class="mx-auto mt-12 max-w-xl border border-gold/40 bg-paper p-6 text-ink sm:p-8">
+					<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold-dark">Configuración pendiente</p>
+					<h2 class="mt-3 font-serif text-3xl">Faltan las credenciales.</h2>
+					<p class="mt-3 font-ui text-sm leading-6 text-ink/65">
+										Definí <code>ADMIN_USERNAME</code> y <code>ADMIN_PASSWORD</code> en las variables de entorno del servidor. También podés agregar <code>ADMIN_SESSION_SECRET</code> para firmar las sesiones con una clave independiente.
+					</p>
+				</section>
+			) : !authenticated ? (
+				<section class="mx-auto mt-12 w-full max-w-md border border-gold/40 bg-paper p-6 text-ink shadow-[0_20px_60px_rgba(0,0,0,.3)] sm:p-8">
+					<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold-dark">Acceso restringido</p>
+					<h2 class="mt-3 font-serif text-3xl">Iniciar sesión</h2>
+					{error === 'invalid' && <p class="mt-4 border border-red-900/20 bg-red-100/70 px-3 py-2 font-ui text-xs text-red-900">Usuario o contraseña incorrectos.</p>}
+					<form class="mt-7 space-y-5" action="/api/admin/login" method="post">
+						<label class="field-label" for="username">Usuario</label>
+						<input class="field-input" id="username" name="username" type="text" autocomplete="username" required />
+						<label class="field-label" for="password">Contraseña</label>
+						<input class="field-input" id="password" name="password" type="password" autocomplete="current-password" required />
+						<button class="mt-2 inline-flex w-full items-center justify-center bg-gold px-5 py-4 font-ui text-xs font-bold uppercase tracking-[.2em] text-ink transition hover:bg-ivory" type="submit">
+							Entrar
+						</button>
+					</form>
+				</section>
+			) : (
+				<section class="mt-10">
+					<div class="flex flex-col justify-between gap-4 border border-ivory/15 bg-ivory/5 p-4 sm:flex-row sm:items-center sm:px-5">
+						<div>
+							<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold">Sesión activa</p>
+							<p class="mt-1 font-ui text-xs text-ivory/55">{guests.length} {guests.length === 1 ? 'registro' : 'registros'} encontrados.</p>
+						</div>
+						<form action="/api/admin/logout" method="post">
+							<button class="border border-ivory/20 px-4 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.18em] text-ivory/70 transition hover:border-gold hover:text-gold" type="submit">Cerrar sesión</button>
+						</form>
+					</div>
+
+					{status && <p class="mt-5 border border-gold/30 bg-gold/10 px-4 py-3 font-ui text-xs text-gold">{status === 'updated' ? 'Mensaje actualizado.' : status === 'cleared' ? 'Mensaje eliminado; el registro se conservó.' : 'Registro eliminado.'}</p>}
+
+					<div class="mt-5 space-y-4">
+						{guests.length === 0 ? (
+							<div class="border border-dashed border-ivory/20 px-5 py-10 text-center font-ui text-sm text-ivory/50">Todavía no hay registros.</div>
+						) : (
+							guests.map((guest) => (
+								<article class="border border-ivory/15 bg-ivory/[.04] p-4 sm:p-5" key={guest.id}>
+									<div class="flex flex-wrap items-start justify-between gap-3">
+										<div>
+											<h2 class="font-serif text-2xl text-ivory">{guest.name}</h2>
+											<p class="mt-1 font-ui text-[10px] uppercase tracking-[.16em] text-ivory/45">ID {guest.id} · {formatDate(guest.createdAt)}</p>
+										</div>
+										<span class={`border px-2 py-1 font-ui text-[9px] font-bold uppercase tracking-[.16em] ${guest.attending ? 'border-gold/40 text-gold' : 'border-ivory/20 text-ivory/45'}`}>
+											{guest.attending ? 'Confirma' : 'No asiste'}
+										</span>
+									</div>
+
+									<form class="mt-5" action="/api/admin/guests" method="post">
+										<input name="id" type="hidden" value={guest.id} />
+										<label class="field-label text-ivory/50" for={`message-${guest.id}`}>Mensaje</label>
+										<textarea class="mt-2 block min-h-28 w-full resize-y border border-ivory/20 bg-ink/70 px-3 py-3 font-serif text-xl leading-snug text-ivory outline-none transition focus:border-gold" id={`message-${guest.id}`} name="message" maxlength="550">{guest.message ?? ''}</textarea>
+										<div class="mt-3 flex flex-wrap gap-2">
+											<button class="bg-gold px-4 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.16em] text-ink transition hover:bg-ivory" name="action" type="submit" value="update">Guardar cambios</button>
+											<button class="border border-ivory/20 px-4 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.16em] text-ivory/65 transition hover:border-gold hover:text-gold" name="action" type="submit" value="clear-message">Quitar mensaje</button>
+											<button class="border border-red-300/30 px-4 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.16em] text-red-200/70 transition hover:border-red-200 hover:text-red-100" name="action" type="submit" value="delete" onclick="return confirm('¿Eliminar este registro completo?')">Eliminar registro</button>
+										</div>
+									</form>
+								</article>
+							))
+						)}
+					</div>
+				</section>
+			)}
+		</div>
+	</main>
+</Layout>

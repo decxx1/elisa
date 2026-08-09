@@ -21,6 +21,18 @@ npm run db:reset
 
 También se puede ejecutar directamente con `node ./scripts/reset-db.mjs`. El comando elimina los registros de `guests` y reinicia su contador; no requiere detener el servidor.
 
+## Administración
+
+La página privada `/admin` permite iniciar sesión, editar mensajes, quitar un mensaje sin borrar la persona o eliminar el registro completo. Configurá estas variables en `.env` o en Coolify:
+
+```bash
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=una-contraseña-segura
+ADMIN_SESSION_SECRET=una-clave-larga-y-aleatoria
+```
+
+`ADMIN_SESSION_SECRET` es opcional porque, si no está definido, se usa la contraseña para firmar la sesión. No expongas estas variables al navegador.
+
 ## Coolify
 
 El proyecto incluye un `Dockerfile` multi-stage. En Coolify:
