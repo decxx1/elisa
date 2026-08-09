@@ -34,22 +34,29 @@ export function authenticateAdmin(username: string, password: string) {
 
 export function createAdminSession(username: string) {
 	const expiresAt = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS;
-	const payload = `${username}.${expiresAt}`;
+	const payload = Buffer.from(JSON.stringify({ username, expiresAt })).toString('base64url');
 	return `${payload}.${sign(payload)}`;
 }
 
 export function isAdminSessionValid(token: string | null | undefined) {
 	if (!token || !isAdminConfigured()) return false;
 	const parts = token.split('.');
-	if (parts.length !== 3) return false;
+	if (parts.length !== 2) return false;
 
-	const [username, expiresAtText, signature] = parts;
-	const expiresAt = Number(expiresAtText);
-	if (!username || !signature || !Number.isInteger(expiresAt) || expiresAt <= Math.floor(Date.now() / 1000)) return false;
-
-	const expectedUsername = getEnv('ADMIN_USERNAME');
-	const payload = `${username}.${expiresAtText}`;
-	return safeEqual(username, expectedUsername) && safeEqual(signature, sign(payload));
+	const [payload, signature] = parts;
+	try {
+		const session = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as {
+			username?: unknown;
+			expiresAt?: unknown;
+		};
+		const username = typeof session.username === 'string' ? session.username : '';
+		const expiresAt = typeof session.expiresAt === 'number' ? session.expiresAt : 0;
+		const expectedUsername = getEnv('ADMIN_USERNAME');
+		if (!username || !signature || !Number.isInteger(expiresAt) || expiresAt <= Math.floor(Date.now() / 1000)) return false;
+		return safeEqual(username, expectedUsername) && safeEqual(signature, sign(payload));
+	} catch {
+		return false;
+	}
 }
 
 export function getAdminSessionFromRequest(request: Request) {
