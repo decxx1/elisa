@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getGuestStats, listGuestbookGuests, registerGuest } from '@/lib/db';
+import { getGuestStats, isRsvpOpen, listGuestbookGuests, registerGuest } from '@/lib/db';
 
 export const prerender = false;
 
@@ -10,12 +10,17 @@ export const GET: APIRoute = () => {
 	const stats = getGuestStats();
 	return Response.json({
 		...stats,
+		rsvpOpen: isRsvpOpen(),
 		guests: listGuestbookGuests()
 	});
 };
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
+		if (!isRsvpOpen()) {
+			return Response.json({ error: 'Las confirmaciones y los saludos ya están cerrados.' }, { status: 403 });
+		}
+
 		const body = await request.json() as {
 			name?: unknown;
 			attending?: unknown;
@@ -34,6 +39,9 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 
 		try {
+			if (!isRsvpOpen()) {
+				return Response.json({ error: 'Las confirmaciones y los saludos ya están cerrados.' }, { status: 403 });
+			}
 			const guest = registerGuest({ name, attending, message });
 			const stats = getGuestStats();
 			return Response.json({

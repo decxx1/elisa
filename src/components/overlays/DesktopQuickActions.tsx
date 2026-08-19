@@ -11,6 +11,13 @@ type DesktopQuickActionsProps = {
 export default function DesktopQuickActions({ guestbookOpen, guestCount, onOpenDate, onOpenLocation, onToggleGuestbook }: DesktopQuickActionsProps) {
 	return (
 		<div className="pointer-events-auto hidden flex-col items-end gap-2 lg:flex">
+			<a
+				className="guestbook-fab flex items-center gap-2 border border-gold bg-gold px-3.5 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.2em] text-ink shadow-[0_10px_30px_rgba(197,154,74,.3)] transition hover:bg-ivory"
+				href="/fotos"
+			>
+				<Icon icon="lucide:camera" width="14" />
+				<span>Subir fotos</span>
+			</a>
 			<button
 				className="guestbook-fab flex items-center gap-2 border border-gold/70 bg-ink/90 px-3.5 py-2.5 font-ui text-[10px] font-bold uppercase tracking-[.2em] text-ivory shadow-[0_8px_24px_rgba(0,0,0,.35)] backdrop-blur-md transition hover:border-gold hover:bg-gold hover:text-ink"
 				type="button"

@@ -4,6 +4,7 @@ import type { RsvpForm, RsvpStatus } from '@/lib/rsvp';
 import type { FormEvent } from 'react';
 
 type RsvpModalProps = {
+	rsvpOpen: boolean;
 	form: RsvpForm;
 	status: RsvpStatus;
 	saving: boolean;
@@ -12,7 +13,7 @@ type RsvpModalProps = {
 	onClose: () => void;
 };
 
-export default function RsvpModal({ form, status, saving, onUpdate, onSubmit, onClose }: RsvpModalProps) {
+export default function RsvpModal({ rsvpOpen, form, status, saving, onUpdate, onSubmit, onClose }: RsvpModalProps) {
 	return (
 		<div className="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-8" role="presentation">
 			<button className="absolute inset-0 bg-ink/85 backdrop-blur-sm" type="button" aria-label="Cerrar formulario" onClick={onClose} />
@@ -36,10 +37,20 @@ export default function RsvpModal({ form, status, saving, onUpdate, onSubmit, on
 					<br />
 					<span className="text-gold-dark">al club?</span>
 				</h2>
-				<p className="mt-4 max-w-sm font-serif text-xl leading-tight text-ink/65">Confirmá tu presencia y dejá tu mensaje.</p>
-				<form className="mt-8 pt-2" onSubmit={onSubmit}>
-					<RsvpFormFields form={form} status={status} saving={saving} onUpdate={onUpdate} />
-				</form>
+				{rsvpOpen ? (
+					<>
+						<p className="mt-4 max-w-sm font-serif text-xl leading-tight text-ink/65">Confirmá tu presencia y dejá tu mensaje.</p>
+						<form className="mt-8 pt-2" onSubmit={onSubmit}>
+							<RsvpFormFields form={form} status={status} saving={saving} onUpdate={onUpdate} />
+						</form>
+					</>
+				) : (
+					<div className="mt-8 border border-gold-dark/25 bg-white/30 p-5">
+						<Icon className="text-gold-dark" icon="lucide:lock-keyhole" width="24" />
+						<h3 className="mt-4 font-serif text-2xl">La lista ya está cerrada.</h3>
+						<p className="mt-2 font-ui text-sm leading-6 text-ink/60">No se aceptan nuevas confirmaciones ni saludos.</p>
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -18,6 +18,7 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=80
 ENV DATABASE_PATH=/app/data/app.db
+ENV UPLOAD_DIR=/app/data/uploads
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl \
@@ -28,7 +29,7 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/scripts ./scripts
 
-RUN mkdir -p /app/data
+RUN mkdir -p /app/data/uploads
 VOLUME ["/app/data"]
 EXPOSE 80
 

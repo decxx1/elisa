@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 type MobileTabBarProps = {
 	guestbookOpen: boolean;
 	guestCount: number;
+	rsvpOpen: boolean;
 	onOpenLocation: () => void;
 	onToggleGuestbook: () => void;
 	onOpenRsvp: () => void;
@@ -12,6 +13,7 @@ type MobileTabBarProps = {
 export default function MobileTabBar({
 	guestbookOpen,
 	guestCount,
+	rsvpOpen,
 	onOpenLocation,
 	onToggleGuestbook,
 	onOpenRsvp,
@@ -22,15 +24,22 @@ export default function MobileTabBar({
 			className="fixed inset-x-0 bottom-0 z-50 border-t border-ivory/10 bg-ink/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
 			aria-label="Accesos rápidos"
 		>
-			<div className="mx-auto grid max-w-lg grid-cols-4">
+			<div className="mx-auto grid max-w-lg grid-cols-5">
 				<button
 					className="flex flex-col items-center gap-1 px-1.5 py-3 font-ui text-[9px] font-bold uppercase tracking-[.14em] text-ivory/70 transition hover:text-gold"
 					type="button"
 					onClick={onOpenRsvp}
 				>
-					<Icon icon="lucide:pen-line" width="18" />
-					Reservar
+					<Icon icon={rsvpOpen ? 'lucide:pen-line' : 'lucide:lock-keyhole'} width="18" />
+					{rsvpOpen ? 'Reservar' : 'Cerrado'}
 				</button>
+				<a
+					className="flex flex-col items-center gap-1 px-1 py-3 font-ui text-[9px] font-bold uppercase tracking-[.12em] text-gold transition hover:text-ivory"
+					href="/fotos"
+				>
+					<Icon icon="lucide:camera" width="18" />
+					Fotos
+				</a>
 				<button
 					className="flex flex-col items-center gap-1 px-1.5 py-3 font-ui text-[9px] font-bold uppercase tracking-[.14em] text-ivory/70 transition hover:text-gold"
 					type="button"

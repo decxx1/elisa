@@ -31,6 +31,7 @@ export default function ArtDecoLanding() {
 	const { musicPlaying, toggleMusic } = useMusic();
 	const {
 		stats,
+		rsvpOpen,
 		guests,
 		visibleGuests,
 		guestbookOpen,
@@ -142,6 +143,7 @@ export default function ArtDecoLanding() {
 				<ContrasenaSection />
 				<RsvpSection
 					confirmed={stats.confirmed}
+					rsvpOpen={rsvpOpen}
 					form={form}
 					status={status}
 					saving={saving}
@@ -181,6 +183,7 @@ export default function ArtDecoLanding() {
 			<MobileTabBar
 				guestbookOpen={guestbookOpen}
 				guestCount={guests.length}
+				rsvpOpen={rsvpOpen}
 				onOpenLocation={() => setLocationModalOpen(true)}
 				onOpenRsvp={openRsvpModal}
 				onToggleGuestbook={toggleGuestbook}
@@ -208,6 +211,7 @@ export default function ArtDecoLanding() {
 
 			{rsvpModalOpen && (
 				<RsvpModal
+					rsvpOpen={rsvpOpen}
 					form={form}
 					status={status}
 					saving={saving}

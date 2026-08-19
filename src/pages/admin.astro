@@ -1,19 +1,35 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { isAdminConfigured, isAdminRequest } from '@/lib/adminAuth';
-import { listAdminGuests } from '@/lib/db';
+import { isRsvpOpen, listAdminGuests, listAdminPhotos } from '@/lib/db';
 
 const authenticated = isAdminRequest(Astro.request);
 const configured = isAdminConfigured();
 const error = Astro.url.searchParams.get('error');
 const status = Astro.url.searchParams.get('status');
 const guests = authenticated ? listAdminGuests() : [];
+const photos = authenticated ? listAdminPhotos() : [];
+const rsvpOpen = authenticated ? isRsvpOpen() : false;
 
 Astro.response.headers.set('Cache-Control', 'no-store');
 
 function formatDate(value: string) {
 	return new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
 }
+
+function formatBytes(value: number) {
+	if (value < 1024 * 1024) return `${Math.max(1, Math.round(value / 1024))} KB`;
+	return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+const statusMessages: Record<string, string> = {
+	updated: 'Mensaje actualizado.',
+	cleared: 'Mensaje eliminado; el registro se conservó.',
+	deleted: 'Registro eliminado.',
+	'rsvp-opened': 'Las confirmaciones y los saludos están habilitados.',
+	'rsvp-closed': 'Las confirmaciones y los saludos quedaron cerrados.',
+	'photo-deleted': 'La foto fue eliminada.'
+};
 ---
 
 <Layout title="Admin · Elisa" description="Administración privada de los mensajes de Elisa." robots="noindex, nofollow">
@@ -62,7 +78,63 @@ function formatDate(value: string) {
 						</form>
 					</div>
 
-					{status && <p class="mt-5 border border-gold/30 bg-gold/10 px-4 py-3 font-ui text-xs text-gold">{status === 'updated' ? 'Mensaje actualizado.' : status === 'cleared' ? 'Mensaje eliminado; el registro se conservó.' : 'Registro eliminado.'}</p>}
+					<form class="mt-5 flex flex-col justify-between gap-4 border border-gold/35 bg-gold/10 p-4 sm:flex-row sm:items-center sm:p-5" action="/api/admin/settings" method="post">
+						<div>
+							<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold">Recepción de respuestas</p>
+							<p class="mt-2 max-w-2xl font-ui text-xs leading-5 text-ivory/60">
+								{rsvpOpen
+									? 'El formulario público acepta confirmaciones de asistencia y nuevos saludos.'
+									: 'El formulario está cerrado y la API rechaza cualquier intento de escritura.'}
+							</p>
+						</div>
+						<label class="flex cursor-pointer items-center gap-3 self-start sm:self-center">
+							<input
+								class="peer sr-only"
+								name="rsvpOpen"
+								type="checkbox"
+								value="true"
+								checked={rsvpOpen}
+								onchange="this.form.requestSubmit()"
+							/>
+							<span class="relative h-7 w-12 border border-ivory/25 bg-ink transition peer-checked:border-gold peer-checked:bg-gold after:absolute after:left-1 after:top-1 after:size-[1.125rem] after:bg-ivory after:transition-transform after:content-[''] peer-checked:after:translate-x-5 peer-checked:after:bg-ink"></span>
+							<span class="font-ui text-[10px] font-bold uppercase tracking-[.18em] text-ivory">{rsvpOpen ? 'Abierto' : 'Cerrado'}</span>
+						</label>
+					</form>
+
+					{status && statusMessages[status] && <p class="mt-5 border border-gold/30 bg-gold/10 px-4 py-3 font-ui text-xs text-gold">{statusMessages[status]}</p>}
+
+					<section class="mt-8 border border-gold/30 bg-gold/10 p-4 sm:p-5">
+						<div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+							<div>
+								<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold">Fotos recibidas</p>
+								<h2 class="mt-2 font-serif text-3xl text-ivory">La galería del festejo.</h2>
+							</div>
+							<p class="font-ui text-[10px] font-bold uppercase tracking-[.18em] text-ivory/50">{photos.length} {photos.length === 1 ? 'foto' : 'fotos'}</p>
+						</div>
+						{photos.length === 0 ? (
+							<div class="mt-5 border border-dashed border-ivory/20 px-5 py-10 text-center font-ui text-sm text-ivory/50">Todavía no recibiste fotos.</div>
+						) : (
+							<div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+								{photos.map((photo) => (
+									<article class="overflow-hidden border border-gold/35 bg-ink/60" key={photo.id}>
+										<a class="group block aspect-square bg-ink" href={`/api/admin/photos/${photo.storedName}`} target="_blank" rel="noreferrer" aria-label={`Abrir foto de ${photo.uploaderName}`}>
+											<img class="size-full object-cover transition duration-500 group-hover:scale-105" src={`/api/photos/thumbnails/${photo.id}`} alt={`Foto subida por ${photo.uploaderName}`} loading="lazy" />
+										</a>
+										<div class="space-y-1 p-3">
+											<p class="truncate font-ui text-[10px] font-bold uppercase tracking-[.12em] text-gold">{photo.uploaderName}</p>
+											<p class="truncate font-ui text-[10px] text-ivory/55" title={photo.originalName}>{photo.originalName}</p>
+											<p class="font-ui text-[9px] uppercase tracking-[.1em] text-ivory/35">{formatBytes(photo.sizeBytes)} · {formatDate(photo.createdAt)}</p>
+											<form class="mt-3" action="/api/admin/photos" method="post">
+												<input name="id" type="hidden" value={photo.id} />
+												<input name="storedName" type="hidden" value={photo.storedName} />
+												<button class="font-ui text-[9px] font-bold uppercase tracking-[.14em] text-red-200/70 transition hover:text-red-100" name="action" type="submit" value="delete" onclick="return confirm('¿Eliminar esta foto definitivamente?')">Eliminar foto</button>
+											</form>
+										</div>
+									</article>
+								))}
+							</div>
+						)}
+					</section>
 
 					<div class="mt-5 space-y-4">
 						{guests.length === 0 ? (

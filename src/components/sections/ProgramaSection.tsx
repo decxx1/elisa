@@ -48,22 +48,20 @@ export default function ProgramaSection() {
 							regresiva.
 						</h2>
 						<p className="mt-8 font-ui text-sm font-bold uppercase tracking-[0.28em] text-ivory">Miércoles 19 de agosto</p>
-						{countdownState?.phase === 'live' ? (
-							<p className="mt-6 border-t border-ink/20 pt-8 font-display text-5xl leading-[.9] tracking-[-.04em] sm:text-7xl">
-								Es ahora<span className="text-ivory">.</span>
-							</p>
-						) : countdownState?.phase === 'ended' ? (
-							<p className="mt-6 border-t border-ink/20 pt-8 font-display text-5xl leading-[.9] tracking-[-.04em] sm:text-7xl">
-								Ya finalizó<span className="text-ivory">.</span>
-							</p>
-						) : (
-							<div className="mt-6 grid grid-cols-4 gap-3 border-t border-ink/20 pt-8 font-ui sm:gap-6">
-								{countdownUnits.map(([key, label]) => (
-									<div className="text-center" key={key}>
-										<p className="font-display text-5xl sm:text-7xl">{countdownState ? pad(countdownState.countdown[key]) : '--'}</p>
-										<p className="mt-2 text-[9px] font-bold uppercase tracking-[.2em] text-ink/80">{label}</p>
-									</div>
-								))}
+						<div className="mt-6 grid grid-cols-4 gap-3 border-t border-ink/20 pt-8 font-ui sm:gap-6">
+							{countdownUnits.map(([key, label]) => (
+								<div className="text-center" key={key}>
+									<p className="font-display text-5xl sm:text-7xl">{countdownState ? pad(countdownState.countdown[key]) : '--'}</p>
+									<p className="mt-2 text-[9px] font-bold uppercase tracking-[.2em] text-ink/80">{label}</p>
+								</div>
+							))}
+						</div>
+						{countdownState && countdownState.phase !== 'upcoming' && (
+							<div className="mt-8 border-t border-ink/20 pt-7">
+								<p className="font-serif text-2xl leading-tight text-ink/75">El festejo también se cuenta con las fotos de todos.</p>
+								<a className="mt-5 inline-flex items-center gap-2 border-b border-ink pb-2 font-ui text-[10px] font-bold uppercase tracking-[.18em] text-ink transition hover:border-ivory hover:text-ivory" href="/fotos">
+									Ver el álbum compartido <Icon icon="lucide:images" width="15" />
+								</a>
 							</div>
 						)}
 					</div>

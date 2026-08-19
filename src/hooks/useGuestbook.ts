@@ -8,6 +8,7 @@ import {
 
 export function useGuestbook() {
 	const [stats, setStats] = useState({ total: 0, confirmed: 0 });
+	const [rsvpOpen, setRsvpOpen] = useState(true);
 	const [guests, setGuests] = useState<GuestNote[]>([]);
 	const [guestbookOpen, setGuestbookOpen] = useState(false);
 	const [guestbookModalOpen, setGuestbookModalOpen] = useState(false);
@@ -22,6 +23,7 @@ export function useGuestbook() {
 			const response = await fetch('/api/rsvp');
 			const data = await response.json();
 			setStats({ total: data.total ?? 0, confirmed: data.confirmed ?? 0 });
+			setRsvpOpen(data.rsvpOpen !== false);
 			setGuests(Array.isArray(data.guests) ? data.guests : []);
 		} catch {
 			/* ignore network errors while idle */
@@ -90,6 +92,7 @@ export function useGuestbook() {
 
 	return {
 		stats,
+		rsvpOpen,
 		guests,
 		visibleGuests,
 		guestbookOpen,
