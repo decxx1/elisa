@@ -111,17 +111,33 @@ export function deleteGuest(id: number) {
 	return db.prepare(`DELETE FROM guests WHERE id = ?`).run(id).changes > 0;
 }
 
-export function isRsvpOpen() {
-	const setting = db.prepare(`SELECT value FROM app_settings WHERE key = 'rsvp_open'`).get() as { value: string } | undefined;
+function getBooleanSetting(key: string) {
+	const setting = db.prepare(`SELECT value FROM app_settings WHERE key = ?`).get(key) as { value: string } | undefined;
 	return setting?.value !== 'false';
 }
 
-export function setRsvpOpen(open: boolean) {
+function setBooleanSetting(key: string, open: boolean) {
 	db.prepare(`
 		INSERT INTO app_settings (key, value, updated_at)
-		VALUES ('rsvp_open', ?, CURRENT_TIMESTAMP)
+		VALUES (?, ?, CURRENT_TIMESTAMP)
 		ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
-	`).run(open ? 'true' : 'false');
+	`).run(key, open ? 'true' : 'false');
+}
+
+export function isRsvpOpen() {
+	return getBooleanSetting('rsvp_open');
+}
+
+export function setRsvpOpen(open: boolean) {
+	setBooleanSetting('rsvp_open', open);
+}
+
+export function isPhotoUploadOpen() {
+	return getBooleanSetting('photo_upload_open');
+}
+
+export function setPhotoUploadOpen(open: boolean) {
+	setBooleanSetting('photo_upload_open', open);
 }
 
 export function registerPhotoUpload(input: {

@@ -1,7 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { isAdminConfigured, isAdminRequest } from '@/lib/adminAuth';
-import { isRsvpOpen, listAdminGuests, listAdminPhotos } from '@/lib/db';
+import { isPhotoUploadOpen, isRsvpOpen, listAdminGuests, listAdminPhotos } from '@/lib/db';
 
 const authenticated = isAdminRequest(Astro.request);
 const configured = isAdminConfigured();
@@ -10,6 +10,7 @@ const status = Astro.url.searchParams.get('status');
 const guests = authenticated ? listAdminGuests() : [];
 const photos = authenticated ? listAdminPhotos() : [];
 const rsvpOpen = authenticated ? isRsvpOpen() : false;
+const photoUploadOpen = authenticated ? isPhotoUploadOpen() : false;
 
 Astro.response.headers.set('Cache-Control', 'no-store');
 
@@ -28,6 +29,8 @@ const statusMessages: Record<string, string> = {
 	deleted: 'Registro eliminado.',
 	'rsvp-opened': 'Las confirmaciones y los saludos están habilitados.',
 	'rsvp-closed': 'Las confirmaciones y los saludos quedaron cerrados.',
+	'photos-opened': 'La subida de fotos está habilitada.',
+	'photos-closed': 'La subida de fotos quedó cerrada.',
 	'photo-deleted': 'La foto fue eliminada.'
 };
 ---
@@ -78,28 +81,55 @@ const statusMessages: Record<string, string> = {
 						</form>
 					</div>
 
-					<form class="mt-5 flex flex-col justify-between gap-4 border border-gold/35 bg-gold/10 p-4 sm:flex-row sm:items-center sm:p-5" action="/api/admin/settings" method="post">
-						<div>
-							<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold">Recepción de respuestas</p>
-							<p class="mt-2 max-w-2xl font-ui text-xs leading-5 text-ivory/60">
-								{rsvpOpen
-									? 'El formulario público acepta confirmaciones de asistencia y nuevos saludos.'
-									: 'El formulario está cerrado y la API rechaza cualquier intento de escritura.'}
-							</p>
-						</div>
-						<label class="flex cursor-pointer items-center gap-3 self-start sm:self-center">
-							<input
-								class="peer sr-only"
-								name="rsvpOpen"
-								type="checkbox"
-								value="true"
-								checked={rsvpOpen}
-								onchange="this.form.requestSubmit()"
-							/>
-							<span class="relative h-7 w-12 border border-ivory/25 bg-ink transition peer-checked:border-gold peer-checked:bg-gold after:absolute after:left-1 after:top-1 after:size-[1.125rem] after:bg-ivory after:transition-transform after:content-[''] peer-checked:after:translate-x-5 peer-checked:after:bg-ink"></span>
-							<span class="font-ui text-[10px] font-bold uppercase tracking-[.18em] text-ivory">{rsvpOpen ? 'Abierto' : 'Cerrado'}</span>
-						</label>
-					</form>
+					<div class="mt-5 grid gap-5 lg:grid-cols-2">
+						<form class="flex flex-col justify-between gap-4 border border-gold/35 bg-gold/10 p-4 sm:flex-row sm:items-center sm:p-5" action="/api/admin/settings" method="post">
+							<input name="setting" type="hidden" value="rsvp" />
+							<div>
+								<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold">Recepción de respuestas</p>
+								<p class="mt-2 max-w-2xl font-ui text-xs leading-5 text-ivory/60">
+									{rsvpOpen
+										? 'El formulario público acepta confirmaciones de asistencia y nuevos saludos.'
+										: 'El formulario está cerrado y la API rechaza cualquier intento de escritura.'}
+								</p>
+							</div>
+							<label class="flex cursor-pointer items-center gap-3 self-start sm:self-center">
+								<input
+									class="peer sr-only"
+									name="rsvpOpen"
+									type="checkbox"
+									value="true"
+									checked={rsvpOpen}
+									onchange="this.form.requestSubmit()"
+								/>
+								<span class="relative h-7 w-12 border border-ivory/25 bg-ink transition peer-checked:border-gold peer-checked:bg-gold after:absolute after:left-1 after:top-1 after:size-[1.125rem] after:bg-ivory after:transition-transform after:content-[''] peer-checked:after:translate-x-5 peer-checked:after:bg-ink"></span>
+								<span class="font-ui text-[10px] font-bold uppercase tracking-[.18em] text-ivory">{rsvpOpen ? 'Abierto' : 'Cerrado'}</span>
+							</label>
+						</form>
+
+						<form class="flex flex-col justify-between gap-4 border border-gold/35 bg-gold/10 p-4 sm:flex-row sm:items-center sm:p-5" action="/api/admin/settings" method="post">
+							<input name="setting" type="hidden" value="photos" />
+							<div>
+								<p class="font-ui text-[10px] font-bold uppercase tracking-[.2em] text-gold">Subida de fotos</p>
+								<p class="mt-2 max-w-2xl font-ui text-xs leading-5 text-ivory/60">
+									{photoUploadOpen
+										? 'La página pública acepta fotos nuevas para el álbum del festejo.'
+										: 'La subida está cerrada y la API rechaza cualquier intento de carga.'}
+								</p>
+							</div>
+							<label class="flex cursor-pointer items-center gap-3 self-start sm:self-center">
+								<input
+									class="peer sr-only"
+									name="photoUploadOpen"
+									type="checkbox"
+									value="true"
+									checked={photoUploadOpen}
+									onchange="this.form.requestSubmit()"
+								/>
+								<span class="relative h-7 w-12 border border-ivory/25 bg-ink transition peer-checked:border-gold peer-checked:bg-gold after:absolute after:left-1 after:top-1 after:size-[1.125rem] after:bg-ivory after:transition-transform after:content-[''] peer-checked:after:translate-x-5 peer-checked:after:bg-ink"></span>
+								<span class="font-ui text-[10px] font-bold uppercase tracking-[.18em] text-ivory">{photoUploadOpen ? 'Abierto' : 'Cerrado'}</span>
+							</label>
+						</form>
+					</div>
 
 					{status && statusMessages[status] && <p class="mt-5 border border-gold/30 bg-gold/10 px-4 py-3 font-ui text-xs text-gold">{statusMessages[status]}</p>}
 

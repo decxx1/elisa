@@ -51,6 +51,11 @@ export default function PhotoUploader() {
 				body.append('photo', file);
 				const response = await fetch('/api/photos', { method: 'POST', body });
 				const data = await response.json();
+				if (response.status === 403) {
+					setUploading(false);
+					setMessage({ type: 'error', text: data.error ?? 'La subida de fotos ya está cerrada.' });
+					return;
+				}
 				if (!response.ok) throw new Error(data.error ?? 'No pudimos guardar la foto.');
 				uploaded += 1;
 			} catch {

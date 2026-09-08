@@ -2,9 +2,12 @@
 import Layout from '@/layouts/Layout.astro';
 import PhotoUploader from '@/components/PhotoUploader';
 import PublicPhotoGallery from '@/components/PublicPhotoGallery';
-import { listPublicPhotos } from '@/lib/db';
+import { isPhotoUploadOpen, listPublicPhotos } from '@/lib/db';
 
 const photos = listPublicPhotos();
+const photoUploadOpen = isPhotoUploadOpen();
+
+Astro.response.headers.set('Cache-Control', 'no-store');
 ---
 
 <Layout title="Fotos del festejo · Elisa" description="Compartí y mirá las fotos del festejo de Elisa." robots="noindex, nofollow">
@@ -22,12 +25,22 @@ const photos = listPublicPhotos();
 					<br />
 					<span class="text-gold">de la fiesta.</span>
 				</h1>
-				<p class="mt-7 max-w-2xl font-serif text-2xl leading-tight text-ivory/70 sm:text-2xl">Elegí fotos de tu galería o tomalas en el momento.</p>
-				<div class="mt-7 flex gap-3 border-y border-ivory/10 py-4 font-ui text-[9px] uppercase tracking-[.16em] text-ivory/45">
-					<span>JPG · PNG · HEIC · WEBP · AVIF</span>
-					<span class="text-gold">Hasta 50 MB por foto</span>
-				</div>
-				<PhotoUploader client:load />
+				{photoUploadOpen ? (
+					<>
+						<p class="mt-7 max-w-2xl font-serif text-2xl leading-tight text-ivory/70 sm:text-2xl">Elegí fotos de tu galería o tomalas en el momento.</p>
+						<div class="mt-7 flex gap-3 border-y border-ivory/10 py-4 font-ui text-[9px] uppercase tracking-[.16em] text-ivory/45">
+							<span>JPG · PNG · HEIC · WEBP · AVIF</span>
+							<span class="text-gold">Hasta 50 MB por foto</span>
+						</div>
+						<PhotoUploader client:load />
+					</>
+				) : (
+					<div class="mt-8 border border-gold/30 bg-ivory/[.04] p-6 sm:p-8">
+						<p class="font-ui text-[10px] font-bold uppercase tracking-[.22em] text-gold">Álbum cerrado</p>
+						<h2 class="mt-3 font-serif text-3xl text-ivory">Ya no se reciben más fotos.</h2>
+						<p class="mt-3 max-w-lg font-ui text-sm leading-6 text-ivory/60">La subida quedó cerrada, pero podés seguir mirando y descargando las que se compartieron.</p>
+					</div>
+				)}
 			</section>
 
 			<section class="mt-10 border border-gold/35 bg-ivory/[.035] p-5 sm:p-9">
@@ -47,7 +60,9 @@ const photos = listPublicPhotos();
 				</div>
 
 				{photos.length === 0 ? (
-					<p class="py-12 text-center font-ui text-sm text-ivory/50">Todavía no hay fotos compartidas. Sé el primero en subir una.</p>
+					<p class="py-12 text-center font-ui text-sm text-ivory/50">
+						{photoUploadOpen ? 'Todavía no hay fotos compartidas. Sé el primero en subir una.' : 'Todavía no hay fotos compartidas.'}
+					</p>
 				) : (
 					<PublicPhotoGallery photos={photos} client:load />
 				)}

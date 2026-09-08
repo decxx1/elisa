@@ -1,10 +1,15 @@
 import type { APIRoute } from 'astro';
+import { isPhotoUploadOpen } from '@/lib/db';
 import { MAX_PHOTO_BYTES, saveUploadedPhoto } from '@/lib/photoUploads';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
+		if (!isPhotoUploadOpen()) {
+			return Response.json({ error: 'La subida de fotos ya está cerrada.' }, { status: 403 });
+		}
+
 		const contentLength = Number(request.headers.get('content-length') ?? 0);
 		if (contentLength > MAX_PHOTO_BYTES + 1024 * 1024) {
 			return Response.json({ error: 'Cada foto puede pesar hasta 50 MB.' }, { status: 413 });
@@ -16,6 +21,9 @@ export const POST: APIRoute = async ({ request }) => {
 
 		if (uploaderName.length < 2) return Response.json({ error: 'Escribí tu nombre antes de subir las fotos.' }, { status: 400 });
 		if (!(photo instanceof File)) return Response.json({ error: 'No recibimos ninguna foto.' }, { status: 400 });
+		if (!isPhotoUploadOpen()) {
+			return Response.json({ error: 'La subida de fotos ya está cerrada.' }, { status: 403 });
+		}
 
 		const saved = await saveUploadedPhoto(photo, uploaderName);
 		return Response.json({ ok: true, ...saved }, { status: 201 });
